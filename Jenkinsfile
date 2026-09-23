@@ -5,28 +5,25 @@ pipeline {
         }
     }
     stages {
-        stage('Build') {
-            steps {
-                sh '''
-                    python -m venv .venv
-                    .venv/bin/pip install -r requirements.txt
-                    mkdir -p dist
-                    echo "Jenkins Python Pipeline Demo" > dist/app.txt
-                '''
-            }
-        }
         stage('Test') {
             steps {
-                sh '''
-                    .venv/bin/pytest --junitxml=test-results.xml
-                '''
+                sh 'echo "Running tests..."'
+                sh '.venv/bin/pytest'
             }
         }
     }
     post {
         always {
-            archiveArtifacts artifacts: 'dist/*.txt', fingerprint: true
-            junit 'test-results.xml'
+            echo 'Pipeline finished'
+        }
+        success {
+            echo 'Tests passed successfully!'
+        }
+        failure {
+            echo 'Tests failed!'
+        }
+        changed {
+            echo 'Build status changed!'
         }
     }
 }
