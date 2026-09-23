@@ -7,14 +7,19 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'pip install -r requirements.txt'
-                sh 'mkdir -p dist'
-                sh 'echo "Jenkins Python Pipeline Demo" > dist/app.txt'
+                sh '''
+                    python -m venv .venv
+                    .venv/bin/pip install -r requirements.txt
+                    mkdir -p dist
+                    echo "Jenkins Python Pipeline Demo" > dist/app.txt
+                '''
             }
         }
         stage('Test') {
             steps {
-                sh 'pytest --junitxml=test-results.xml'
+                sh '''
+                    .venv/bin/pytest --junitxml=test-results.xml
+                '''
             }
         }
     }
